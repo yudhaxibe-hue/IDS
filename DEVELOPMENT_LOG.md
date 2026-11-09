@@ -35,3 +35,34 @@ This document maintains a chronological, dated record of all engineering changes
 #### Next Action:
 - Commit Milestone 0 baseline to Git.
 - Confirm roadmap with user and begin Milestone 1 (Desktop shell, FastAPI backend, lifecycle, and loopback token security).
+
+
+---
+
+### [2026-11-09] - Milestone 1: Minimal Desktop Shell, Loopback Backend & Security Layer
+
+#### Key Actions Completed:
+1. **Virtual Environment & Dependencies**:
+   - Initialized Python 3.9 venv in `venv/`.
+   - Installed core dependencies: `pywebview 4.4.1`, `fastapi 0.128.8`, `uvicorn 0.39.0`, `scikit-learn 1.4.2`, `shap 0.49.1`, `scapy 2.8.0`, `pandas 2.3.3`, `numpy 1.26.4`, `pytest 8.4.2`.
+2. **Loopback-Only Security & Session Token Validation**:
+   - Authored `backend/api/auth.py` providing `verify_loopback_only` and `verify_local_request`.
+   - Strict loopback IP filtering (`127.0.0.1`, `::1`) and per-session bearer tokens via `X-Session-Token` header.
+3. **Database Architecture**:
+   - Authored `backend/database/db.py` setting up SQLite in WAL mode.
+   - Initialized schemas for `events`, `drift_logs`, `model_registry`, and `settings`.
+4. **FastAPI Application & REST Routing**:
+   - Authored `app/main.py` with lifespan hooks and loopback CORS.
+   - Authored `backend/api/routes.py` with `/api/health`, `/api/status`, `/api/interfaces`, `/api/monitoring/start|stop`, `/api/events`, and `/api/about`.
+5. **Desktop Frontend GUI**:
+   - Developed `frontend/index.html`, `frontend/css/style.css`, and `frontend/js/app.js`.
+   - Responsive dark cybersecurity theme with navigation tabs, live telemetry polling, and start/stop monitoring controls.
+6. **Launcher & Desktop Window Lifecycle**:
+   - Authored `app/launcher.py` with ephemeral loopback port discovery, Uvicorn server background thread, health probing, and `pywebview.create_window`.
+7. **Automated Testing Suite**:
+   - Created `tests/unit/test_auth.py`, `tests/unit/test_database.py`, `tests/integration/test_api_milestone1.py`, and `tests/integration/test_launcher.py`.
+   - Executed test suite: 12 passed, 0 failed, 1 skipped.
+
+#### Next Action:
+- Commit Milestone 1 changes to Git.
+- Proceed to **Milestone 2**: Dataset ingestion, canonical feature schema V1, and baseline ML model training & evaluation.

@@ -59,8 +59,12 @@ coverage.xml
 *.db
 *.sqlite
 *.sqlite3
+*.db-shm
+*.db-wal
 backend/database/*.db
 backend/database/*.sqlite3
+backend/database/*.db-shm
+backend/database/*.db-wal
 
 # Network capture files & runtime logs
 *.pcap

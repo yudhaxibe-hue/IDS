@@ -10,8 +10,8 @@
 
 | Milestone | Description | Status | Progress |
 | :--- | :--- | :--- | :--- |
-| **Milestone 0** | Workspace inspection, risk assessment, architecture & planning | **IN PROGRESS** | 90% |
-| **Milestone 1** | Minimal desktop shell (pywebview + FastAPI + token auth) | PENDING | 0% |
+| **Milestone 0** | Workspace inspection, risk assessment, architecture & planning | **COMPLETED** | 100% |
+| **Milestone 1** | Minimal desktop shell (pywebview + FastAPI + token auth) | **COMPLETED** | 100% |
 | **Milestone 2** | Dataset ingestion, canonical feature schema & baseline ML model | PENDING | 0% |
 | **Milestone 3** | Explainable AI (SHAP integration & deterministic explanations) | PENDING | 0% |
 | **Milestone 4** | Drift monitoring & controlled adaptation sandbox | PENDING | 0% |
@@ -22,16 +22,15 @@
 
 ---
 
-## 2. Completed Work in Current Milestone (Milestone 0)
-- [x] Host environment inspected: macOS 27.2.0 (ARM64 Apple Silicon), Python 3.9.6, Git 2.54.0, 93 GiB available disk.
-- [x] Master engineering specification reviewed in detail.
-- [x] Clean directory tree created at `/Users/yudha/Documents/Explainable-Adaptive-IDS/`.
-- [x] Module packages (`__init__.py`) and `.gitkeep` markers established.
-- [x] `.gitignore` created to prevent committing raw pcaps, datasets, build outputs, databases, or secrets.
-- [x] `requirements.txt` crafted with pinned versions compatible with Python 3.9+ on macOS ARM64 and Windows.
-- [x] `ARCHITECTURE.md` written defining system components, trust boundaries, data flows, and platform strategy.
-- [x] `TEST_PLAN.md` drafted covering unit, integration, ML validation, XAI sanity, and platform capture checks.
-- [x] `DEVELOPMENT_LOG.md` initialized for chronological tracking.
+## 2. Completed Work in Current Milestone (Milestone 1)
+- [x] Python virtual environment configured (`venv`) with dependencies installed (`pywebview`, `fastapi`, `uvicorn`, `scikit-learn`, `shap`, `scapy`, `pytest`, `pandas`, `numpy`).
+- [x] Security layer created (`backend/api/auth.py`): loopback client isolation (`127.0.0.1`) and cryptographic per-session token validation (`X-Session-Token`).
+- [x] SQLite persistence layer initialized (`backend/database/db.py`) with WAL mode, parameterized queries, and events/drift/model schema.
+- [x] Lifecycle manager created (`app/lifecycle.py`) coordinating thread-safe global telemetry and clean shutdown.
+- [x] FastAPI REST routes established (`backend/api/routes.py`): health checks, status telemetry, capture interface diagnostics, start/stop controls, and academic metadata.
+- [x] Modern desktop frontend built (`frontend/index.html`, `frontend/css/style.css`, `frontend/js/app.js`) with responsive dark theme and live telemetry polling.
+- [x] Desktop launcher implemented (`app/launcher.py`): ephemeral loopback port discovery, session token injection, background Uvicorn daemon, health verification, and `pywebview` window.
+- [x] Automated test suite added (`tests/unit/test_auth.py`, `tests/unit/test_database.py`, `tests/integration/test_api_milestone1.py`, `tests/integration/test_launcher.py`) with 12 passing tests.
 
 ---
 

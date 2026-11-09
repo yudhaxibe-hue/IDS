@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explainable Adaptive IDS</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-mark">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h2>Adaptive IDS</h2>
+          <span class="subtext">Explainable AI Prototype</span>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-btn active" data-tab="overview">
+          <span class="nav-icon">📊</span> Overview
+        </button>
+        <button class="nav-btn" data-tab="monitoring">
+          <span class="nav-icon">📡</span> Live Monitoring
+        </button>
+        <button class="nav-btn" data-tab="alerts">
+          <span class="nav-icon">🚨</span> Threat Alerts
+          <span class="badge" id="nav-alert-count">0</span>
+        </button>
+        <button class="nav-btn" data-tab="explainability">
+          <span class="nav-icon">🔍</span> Explainability (XAI)
+        </button>
+        <button class="nav-btn" data-tab="adaptation">
+          <span class="nav-icon">🔄</span> Drift & Adaptation
+        </button>
+        <button class="nav-btn" data-tab="history">
+          <span class="nav-icon">📜</span> Event History
+        </button>
+        <button class="nav-btn" data-tab="reports">
+          <span class="nav-icon">📥</span> Export Reports
+        </button>
+        <button class="nav-btn" data-tab="settings">
+          <span class="nav-icon">⚙️</span> Settings
+        </button>
+        <button class="nav-btn" data-tab="about">
+          <span class="nav-icon">ℹ️</span> About Project
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-indicator">
+          <span class="dot online" id="status-dot"></span>
+          <span class="status-label" id="status-text">Backend Connected</span>
+        </div>
+        <div class="loopback-badge">Loopback: 127.0.0.1</div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Header Bar -->
+      <header class="topbar">
+        <div class="page-title">
+          <h1 id="current-tab-title">System Overview</h1>
+        </div>
+        <div class="topbar-actions">
+          <span class="mode-pill idle" id="monitoring-mode-pill">STATUS: IDLE</span>
+          <span class="model-pill" id="model-version-pill">MODEL: v1.0.0-baseline</span>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <section class="content-body">
+        
+        <!-- Tab 1: Overview -->
+        <div class="tab-pane active" id="tab-overview">
+          <div class="metric-grid">
+            <div class="metric-card">
+              <span class="metric-title">Processed Flows</span>
+              <span class="metric-value" id="stat-total-flows">0</span>
+              <span class="metric-meta">Bidirectional network flows</span>
+            </div>
+            <div class="metric-card alert-card">
+              <span class="metric-title">Threat Alerts</span>
+              <span class="metric-value" id="stat-alerts">0</span>
+              <span class="metric-meta" id="stat-alert-percent">0% flagged malicious</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-title">Normal Traffic</span>
+              <span class="metric-value" id="stat-normal">0</span>
+              <span class="metric-meta">Benign verified flows</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-title">Distribution Drift</span>
+              <span class="metric-value text-green" id="stat-drift">STABLE</span>
+              <span class="metric-meta">KS-Test Drift Monitor</span>
+            </div>
+          </div>
+
+          <div class="card recent-alerts-card">
+            <div class="card-header">
+              <h3>Recent Suspicious Events</h3>
+              <button class="btn btn-secondary btn-sm" onclick="switchTab('alerts')">View All</button>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="overview-alerts-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Source IP</th>
+                    <th>Destination IP</th>
+                    <th>Protocol</th>
+                    <th>Category</th>
+                    <th>Confidence</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="overview-alerts-body">
+                  <tr class="empty-row"><td colspan="7">No threat alerts recorded yet. Start monitoring to process flows.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Live Monitoring -->
+        <div class="tab-pane" id="tab-monitoring">
+          <div class="card">
+            <div class="card-header">
+              <h3>Capture & Ingestion Configuration</h3>
+            </div>
+            <div class="card-body">
+              <div class="control-row">
+                <div class="form-group">
+                  <label for="select-interface">Select Network Interface</label>
+                  <select id="select-interface" class="form-control">
+                    <option value="en0">en0 - Primary Network Adapter (Wi-Fi / Ethernet)</option>
+                    <option value="lo0">lo0 - Loopback Interface (127.0.0.1)</option>
+                    <option value="demo_replay" selected>demo_replay - Offline Dataset Simulation Stream</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="select-mode">Ingestion Mode</label>
+                  <select id="select-mode" class="form-control">
+                    <option value="demo" selected>Offline Replay / Demo Mode (No Privileges Required)</option>
+                    <option value="live">Live Network Packet Capture (Host Observable Only)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="permission-notice" id="permission-notice-box">
+                <div class="notice-icon">💡</div>
+                <div class="notice-text">
+                  <strong>Notice:</strong> Offline Demo / Replay mode reproduces realistic flow traces without requiring elevated OS packet capture permissions.
+                </div>
+              </div>
+
+              <div class="button-group">
+                <button class="btn btn-primary" id="btn-start-monitoring">▶ Start Monitoring</button>
+                <button class="btn btn-danger" id="btn-stop-monitoring" disabled>⏹ Stop Monitoring</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Alerts -->
+        <div class="tab-pane" id="tab-alerts">
+          <div class="card">
+            <div class="card-header">
+              <h3>Flagged Intrusion Alerts</h3>
+              <div class="table-actions">
+                <span class="filter-label">Filter:</span>
+                <select id="filter-alert-category" class="form-control form-control-sm">
+                  <option value="all">All Categories</option>
+                  <option value="DoS">DoS / DDoS</option>
+                  <option value="Portscan">Portscan</option>
+                  <option value="BruteForce">Brute Force</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="alerts-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Time</th>
+                    <th>Source</th>
+                    <th>Target</th>
+                    <th>Attack Type</th>
+                    <th>Severity</th>
+                    <th>Confidence</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody id="alerts-table-body">
+                  <tr class="empty-row"><td colspan="8">No alerts flagged.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Explainability (XAI) -->
+        <div class="tab-pane" id="tab-explainability">
+          <div class="card">
+            <div class="card-header">
+              <h3>Explainable AI Prediction Inspector (SHAP)</h3>
+            </div>
+            <div class="card-body">
+              <div class="xai-summary-box" id="xai-summary-box">
+                <h4>Deterministic Plain-Language Explanation</h4>
+                <p id="xai-summary-text">Select an alert from the Threat Alerts table or start monitoring to generate grounded feature attribution explanations.</p>
+              </div>
+
+              <div class="xai-features-container">
+                <h4>Top Contributing Flow Features</h4>
+                <div id="xai-feature-bars" class="xai-feature-bars">
+                  <p class="placeholder-text">Awaiting event inspection...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 5: Drift & Adaptation -->
+        <div class="tab-pane" id="tab-adaptation">
+          <div class="card">
+            <div class="card-header">
+              <h3>Concept Drift Monitoring & Adaptation Sandbox</h3>
+            </div>
+            <div class="card-body">
+              <p class="section-desc">Monitors feature distribution shifts over time using Kolmogorov-Smirnov statistical divergence. Prevents unverified self-training on unlabeled data.</p>
+              
+              <div class="drift-status-banner stable" id="drift-banner">
+                <span class="drift-icon">🛡️</span>
+                <div class="drift-info">
+                  <h4>Distribution Status: STABLE</h4>
+                  <p>Streaming flow metrics align with the approved baseline training distribution.</p>
+                </div>
+              </div>
+
+              <div class="adaptation-controls">
+                <h4>Controlled Adaptation Governance</h4>
+                <p>When significant concept drift is flagged, candidate models must be evaluated against a held-out test protocol before promotion.</p>
+                <div class="button-group">
+                  <button class="btn btn-secondary" disabled>Assess Candidate Model</button>
+                  <button class="btn btn-secondary" disabled>Rollback to Previous Model</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 6: History -->
+        <div class="tab-pane" id="tab-history">
+          <div class="card">
+            <div class="card-header">
+              <h3>Local SQLite Flow Database</h3>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="history-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Flow 5-Tuple</th>
+                    <th>Packets</th>
+                    <th>Bytes</th>
+                    <th>Classification</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody id="history-table-body">
+                  <tr class="empty-row"><td colspan="6">No flow records in local database.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 7: Reports -->
+        <div class="tab-pane" id="tab-reports">
+          <div class="card">
+            <div class="card-header">
+              <h3>Security & Compliance Reports</h3>
+            </div>
+            <div class="card-body">
+              <p>Export authenticated alert logs and model telemetry for audit and academic evaluation.</p>
+              <div class="button-group">
+                <button class="btn btn-primary" onclick="alert('Exporting verified events to CSV...')">Export Events to CSV</button>
+                <button class="btn btn-secondary" onclick="window.print()">Print Report Summary</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 8: Settings -->
+        <div class="tab-pane" id="tab-settings">
+          <div class="card">
+            <div class="card-header">
+              <h3>Application & Detection Settings</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label for="threshold-slider">Alert Detection Threshold (Current: <span id="threshold-val">0.70</span>)</label>
+                <input type="range" id="threshold-slider" min="0.50" max="0.95" step="0.05" value="0.70" class="form-range">
+                <small class="form-text">Adjusting threshold balances False Positives vs. Detection Recall.</small>
+              </div>
+              <div class="form-group">
+                <label>Data Retention Policy</label>
+                <select class="form-control">
+                  <option value="30">Retain past 30 days of flow events</option>
+                  <option value="7">Retain past 7 days</option>
+                  <option value="all">Retain all records indefinitely</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 9: About -->
+        <div class="tab-pane" id="tab-about">
+          <div class="card">
+            <div class="card-header">
+              <h3>Academic Project Specification & Methodology</h3>
+            </div>
+            <div class="card-body about-body">
+              <h4>Explainable Adaptive AI-Based Intrusion Detection System</h4>
+              <p class="subtitle">Academic Master of Engineering (M.E.) Demonstration Prototype</p>
+              
+              <div class="methodology-section">
+                <h5>Three Core Architectural Contributions:</h5>
+                <ol>
+                  <li><strong>Machine Learning Detection:</strong> Bidirectional network flow feature extraction evaluated with Random Forest / Extra Trees models.</li>
+                  <li><strong>Explainable AI (XAI):</strong> Local SHAP feature attribution with plain-language, deterministic translation for security analysts.</li>
+                  <li><strong>Concept Drift Adaptation:</strong> Statistical drift surveillance with candidate model evaluation sandboxing (no unverified self-training).</li>
+                </ol>
+              </div>
+
+              <div class="privacy-guarantee">
+                <h5>Privacy & Trust Architecture:</h5>
+                <ul>
+                  <li>100% Local Inference — zero paid third-party cloud APIs.</li>
+                  <li>Strict Loopback Binding (`127.0.0.1`) with per-session token protection.</li>
+                  <li>No raw packet payloads are stored, exported, or transmitted.</li>
+                  <li>Observable local machine traffic only — no unverified network-wide claims.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
