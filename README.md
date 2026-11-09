@@ -5,32 +5,32 @@
 [![Python: 3.9+](https://img.shields.io/badge/Python-3.9%2B-blue.svg)]()
 [![UI: pywebview + Browser](https://img.shields.io/badge/UI-Desktop%20%7C%20Safari%2FChrome-orange.svg)]()
 [![Privacy: 100% Local](https://img.shields.io/badge/Privacy-100%25%20Local%20%7C%20No%20Cloud-success.svg)]()
+[![GitHub release](https://img.shields.io/github/v/release/yudhaxibe-hue/IDS?include_prereleases&color=success&label=Latest%20Release)](https://github.com/yudhaxibe-hue/IDS/releases/latest)
 
 An academic Master of Engineering prototype combining **Standardized Machine Learning Intrusion Detection**, **Explainable AI (SHAP)**, and **Statistical Concept Drift Surveillance** into a privacy-preserving desktop application for macOS and Windows.
 
 ---
 
-## ⚡ 1-Click Launchers & Quick Start (For Evaluators, Professors & Demonstrations)
+# 💾 INSTALLATION & 1-CLICK QUICK RUN
 
-No complex command-line configuration required! You can launch the system with a single double-click:
+> ### 🎓 For Evaluators, Professors & Quick Testing (Zero Setup Required)
+> **You do NOT need to clone this repository, use the terminal, or configure Python to run this project.**
+> Simply click the download button for your operating system below, open your Downloads folder, and double-click to launch!
 
-### 🍎 On macOS (Apple Silicon / Intel)
-1. Download or clone this repository to your Mac.
-2. In **Finder**, double-click **`Run_IDS_Mac.command`**.
-3. *That's it!* The launcher automatically verifies Python, configures an isolated virtual environment, checks the trained machine learning model, and opens the application.
-> **Tip for Safari / Chrome**: When running `Run_IDS_Mac.command`, you can press **`2`** to launch directly in your default web browser (Safari) instead of a desktop window, or run `./venv/bin/python3 -m app.launcher --browser`.
-
-### 🪟 On Windows (Windows 10 / 11)
-1. Download or clone this repository to your PC.
-2. In **File Explorer**, double-click **`Run_IDS_Windows.bat`**.
-3. *That's it!* The batch launcher configures the environment, loads the baseline Random Forest model, and launches the application window.
+| Operating System | Direct 1-Click Download | How to Run (2 Simple Clicks) |
+| :--- | :--- | :--- |
+| **🪟 Windows 10 / 11** | [**📥 Click Here to Download for Windows (.zip)**](https://github.com/yudhaxibe-hue/IDS/releases/download/v1.0.0/ExplainableAdaptiveIDS-Windows-unsigned.zip) | **1.** Unzip the downloaded file.<br>**2.** Double-click **`ExplainableAdaptiveIDS.exe`**.<br>*The app opens immediately in its own clean application window!* |
+| **🍎 macOS (Apple Silicon & Intel)** | [**📥 Click Here to Download for macOS (.zip)**](https://github.com/yudhaxibe-hue/IDS/releases/download/v1.0.0/ExplainableAdaptiveIDS-macOS-unsigned.zip) | **1.** Unzip the downloaded file.<br>**2.** Double-click **`ExplainableAdaptiveIDS.app`**.<br>*(On first launch, right-click and choose "Open" to approve the unsigned research build).* |
+| **📦 GitHub Releases Hub** | [**🔗 View All Releases & Checksums**](https://github.com/yudhaxibe-hue/IDS/releases/latest) | Official release portal with SHA-256 verification hashes and release notes. |
 
 ---
 
-### 📦 Standalone Binary Downloads (No Python Required)
-If you do not have Python installed and wish to run the pre-built desktop application directly:
-- **macOS Application**: Download `ExplainableAdaptiveIDS-macOS-unsigned.zip` from [GitHub Releases](https://github.com/yudhaxibe-hue/IDS/releases). Unzip and double-click `ExplainableAdaptiveIDS.app`. *(On first run, right-click and choose "Open" to approve the unsigned research build).*
-- **Windows Application**: Download `ExplainableAdaptiveIDS-Windows-unsigned.zip` from [GitHub Releases](https://github.com/yudhaxibe-hue/IDS/releases). Unzip and run `ExplainableAdaptiveIDS.exe`.
+### 📂 Alternative: Running from the GitHub Repository Folder
+If you downloaded or cloned the source code directly:
+- **On Windows**: Double-click **`Run_IDS_Windows.bat`** in File Explorer.
+- **On macOS**: Double-click **`Run_IDS_Mac.command`** in Finder.
+
+The launcher handles everything automatically: it verifies your environment, prepares dependencies, checks the baseline machine learning model, and opens the application window. If native desktop rendering is unavailable on the machine, it automatically and safely falls back to opening in your default web browser (Safari / Google Chrome / Microsoft Edge) with zero login required.
 
 ---
 
@@ -38,7 +38,7 @@ If you do not have Python installed and wish to run the pre-built desktop applic
 
 Follow these simple steps to demonstrate all core capabilities in under a minute:
 
-1. **Launch**: Double-click `Run_IDS_Mac.command` (macOS) or `Run_IDS_Windows.bat` (Windows). The **System Overview** displays 0 flows and a clean status badge.
+1. **Launch**: Double-click `ExplainableAdaptiveIDS.exe` (or `Run_IDS_Windows.bat` on Windows / `Run_IDS_Mac.command` on macOS). The **System Overview** displays 0 flows and a clean status badge.
 2. **Start Monitoring**: Click the **Live Monitoring** tab on the left sidebar.
    - Select **Demo / Offline Replay Mode** (safe, reproducible, requires zero root/admin permissions).
    - Click **Start Capture**.
@@ -101,7 +101,7 @@ Explainable-Adaptive-IDS/
 ├── backend/                  # FastAPI server, REST routes, services & SQLite DB
 ├── core/                     # Preprocessing, ML detection, classification, XAI & adaptation
 ├── monitoring/               # Packet capture (macOS/Windows) & flow processing
-├── models/                   # Training scripts, evaluation notebooks & serialized models
+├── models/               # Training scripts, evaluation notebooks & serialized models
 ├── datasets/                 # Dataset ingestion managers & sample records
 ├── packaging/                # PyInstaller spec files & installer builders
 ├── tests/                    # Unit, integration, ML, and packaging tests

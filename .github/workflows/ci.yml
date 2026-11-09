@@ -101,3 +101,43 @@ jobs:
           path: |
             dist/ExplainableAdaptiveIDS-Windows-unsigned.zip
             dist/ExplainableAdaptiveIDS-Windows.sha256
+
+  publish-release:
+    name: Publish GitHub Release for Evaluators
+    needs: [macos-build, windows-build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Download macOS Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ExplainableAdaptiveIDS-macOS
+          path: release-dist/
+
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ExplainableAdaptiveIDS-Windows
+          path: release-dist/
+
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: "Explainable Adaptive IDS v1.0.0 - 1-Click Evaluation Release"
+          draft: false
+          prerelease: false
+          files: |
+            release-dist/*
+          body: |
+            # Explainable Adaptive Intrusion Detection System (IDS) v1.0.0
+            
+            Academic Master of Engineering Research Prototype for evaluating Machine Learning Threat Classification, SHAP Explainability (XAI), and Statistical Concept Drift Surveillance.
+            
+            ---
+            
+            ### 📥 1-Click Direct Downloads (No Python Required)
+            * **Windows Users**: Download [`ExplainableAdaptiveIDS-Windows-unsigned.zip`](https://github.com/yudhaxibe-hue/IDS/releases/download/v1.0.0/ExplainableAdaptiveIDS-Windows-unsigned.zip), unzip, and double-click `ExplainableAdaptiveIDS.exe`.
+            * **macOS Users**: Download [`ExplainableAdaptiveIDS-macOS-unsigned.zip`](https://github.com/yudhaxibe-hue/IDS/releases/download/v1.0.0/ExplainableAdaptiveIDS-macOS-unsigned.zip), unzip, and open `ExplainableAdaptiveIDS.app`.
