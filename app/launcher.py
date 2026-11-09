@@ -77,8 +77,8 @@ def wait_for_server(host: str, port: int, timeout_sec: float = 10.0) -> bool:
     return False
 
 
-def launch(headless: bool = False) -> None:
-    """Launch backend server and open pywebview desktop window."""
+def launch(headless: bool = False, open_browser: bool = False) -> None:
+    """Launch backend server and open pywebview desktop window or browser."""
     host = "127.0.0.1"
     port = find_free_port(host)
     token = generate_session_token()
@@ -95,6 +95,20 @@ def launch(headless: bool = False) -> None:
 
     logger.info("Backend is healthy and listening on loopback.")
     frontend_url = f"http://{host}:{port}/static/index.html?token={token}"
+
+    if open_browser:
+        import webbrowser
+        logger.info(f"Opening default browser (Safari): {frontend_url}")
+        webbrowser.open(frontend_url)
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            logger.info("Termination signal received.")
+        finally:
+            on_shutdown()
+            server_thread.stop()
+        return
 
     if headless:
         logger.info("Running in headless mode (--headless). Press Ctrl+C to terminate.")
@@ -136,4 +150,5 @@ def launch(headless: bool = False) -> None:
 
 if __name__ == "__main__":
     is_headless = "--headless" in sys.argv or "--server-only" in sys.argv
-    launch(headless=is_headless)
+    use_browser = "--browser" in sys.argv
+    launch(headless=is_headless, open_browser=use_browser)
