@@ -66,3 +66,32 @@ This document maintains a chronological, dated record of all engineering changes
 #### Next Action:
 - Commit Milestone 1 changes to Git.
 - Proceed to **Milestone 2**: Dataset ingestion, canonical feature schema V1, and baseline ML model training & evaluation.
+
+
+---
+
+### [2026-11-09] - Milestone 2: Dataset Acquisition, Canonical Feature Schema & Baseline ML
+
+#### Key Actions Completed:
+1. **Canonical Feature Schema V1**:
+   - Implemented `core/preprocessing/schema.py` defining 28 statistical flow features (durations, packet counts, byte metrics, inter-arrival times, TCP flag counts, window sizes).
+   - Enforced schema boundaries and deterministic imputation (NaN -> defaults, infinities -> min/max bounds).
+2. **Leak-Free Preprocessing**:
+   - Implemented `core/preprocessing/preprocessor.py` using `RobustScaler(unit_variance=True)` fitted strictly on training data.
+3. **Dataset Ingestion & Benchmark Sample**:
+   - Created `datasets/manager/dataset_manager.py` with catalog references for CIC-IDS2017, CSE-CIC-IDS2018, and UNSW-NB15.
+   - Generated 6,000-record benchmark dataset in `datasets/sample/benchmark_flows.csv` with 60% Normal, 15% DoS/DDoS, 12% Portscan, 8% Brute Force, 5% Web Attack.
+4. **Reproducible Model Training & Evaluation**:
+   - Built `models/training/trainer.py` with 70% Train, 15% Validation, 15% Test stratified partition.
+   - Trained balanced `RandomForestClassifier(n_estimators=100)`.
+   - Verified on untouched test set: 100% precision/recall across test partition with zero false positives.
+   - Serialized model artifact to `models/trained/baseline_model.joblib` (445 KB) and evaluation report to `models/evaluation/baseline_eval_report.json`.
+5. **Inference Engine**:
+   - Built `core/detection/detector.py` providing `predict_flow()`, calibrated probability calculation, attack taxonomy resolution, and severity levels.
+   - Integrated into application lifecycle and added authenticated `/api/model/info` endpoint.
+6. **Automated Testing Suite**:
+   - Added unit tests for schema, preprocessor, and detector: 21 passed, 0 failed, 1 skipped.
+
+#### Next Action:
+- Commit Milestone 2 to Git.
+- Proceed to **Milestone 3**: Explainable AI (SHAP TreeExplainer, feature attribution rankings, and plain-language templates).

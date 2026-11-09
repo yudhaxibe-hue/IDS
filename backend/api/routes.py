@@ -203,5 +203,25 @@ async def get_about_info():
     }
 
 
+@protected_router.get("/model/info")
+async def get_model_info():
+    """Return active model details, evaluation metrics, and feature schema."""
+    detector = app_state.detector
+    if not detector or not detector.is_loaded:
+        return {
+            "model_loaded": False,
+            "message": "No active model loaded."
+        }
+
+    return {
+        "model_loaded": True,
+        "version": detector.model_version,
+        "taxonomy": detector.taxonomy,
+        "feature_count": len(detector.feature_names),
+        "feature_names": detector.feature_names,
+        "metadata": detector.metadata
+    }
+
+
 # Include protected router inside the base /api router
 router.include_router(protected_router)

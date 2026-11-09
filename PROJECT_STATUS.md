@@ -12,13 +12,26 @@
 | :--- | :--- | :--- | :--- |
 | **Milestone 0** | Workspace inspection, risk assessment, architecture & planning | **COMPLETED** | 100% |
 | **Milestone 1** | Minimal desktop shell (pywebview + FastAPI + token auth) | **COMPLETED** | 100% |
-| **Milestone 2** | Dataset ingestion, canonical feature schema & baseline ML model | PENDING | 0% |
+| **Milestone 2** | Dataset ingestion, canonical feature schema & baseline ML model | **COMPLETED** | 100% |
 | **Milestone 3** | Explainable AI (SHAP integration & deterministic explanations) | PENDING | 0% |
 | **Milestone 4** | Drift monitoring & controlled adaptation sandbox | PENDING | 0% |
 | **Milestone 5** | Live packet capture (macOS/Windows) & bidirectional flow processing | PENDING | 0% |
 | **Milestone 6** | Desktop dashboard UI, alert management, persistence & reports | PENDING | 0% |
 | **Milestone 7** | PyInstaller packaging & cross-platform CI (macOS & Windows) | PENDING | 0% |
 | **Milestone 8** | Verification, academic documentation, artifact generation & handover | PENDING | 0% |
+
+---
+
+## 2. Completed Work in Current Milestone (Milestone 2)
+- [x] Defined Canonical Feature Schema V1 (`core/preprocessing/schema.py`) with 28 bidirectional packet-header and timing features.
+- [x] Implemented leak-free `FlowPreprocessor` (`core/preprocessing/preprocessor.py`) with RobustScaler and boundary clipping.
+- [x] Authored dataset catalog and benchmark manager (`datasets/manager/dataset_manager.py`) documenting CIC-IDS2017, CSE-CIC-IDS2018, and UNSW-NB15 with reproducible sample generator.
+- [x] Built training and evaluation pipeline (`models/training/trainer.py`) executing 70/15/15 stratified train/val/test splits without data leakage.
+- [x] Successfully trained Random Forest classifier with balanced weights, saving 445 KB model artifact (`models/trained/baseline_model.joblib`).
+- [x] Generated verifiable evaluation report (`models/evaluation/baseline_eval_report.json`) reporting Accuracy, Precision, Recall, F1, FPR, FNR, and confusion matrix.
+- [x] Built `ThreatDetector` inference engine (`core/detection/detector.py`) with calibrated confidence, category taxonomy, and standardized severity tiers.
+- [x] Integrated detector into lifecycle startup and added `/api/model/info` endpoint.
+- [x] Added automated unit tests (`tests/unit/test_schema.py`, `tests/unit/test_preprocessor.py`, `tests/unit/test_detector.py`) with 21 passing tests.
 
 ---
 

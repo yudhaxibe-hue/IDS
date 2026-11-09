@@ -8,6 +8,7 @@ import threading
 from typing import Dict, Any, Optional
 
 from backend.database.db import initialize_database
+from core.detection.detector import ThreatDetector, DEFAULT_MODEL_PATH
 
 logging.basicConfig(
     level=logging.INFO,
@@ -29,6 +30,7 @@ class ApplicationState:
         self.processed_flows_count = 0
         self.alert_count = 0
         self.drift_status = "STABLE"
+        self.detector: Optional[ThreatDetector] = None
 
     def set_monitoring(self, active: bool, mode: str = "idle", interface: Optional[str] = None) -> None:
         with self._lock:
@@ -63,7 +65,7 @@ app_state = ApplicationState()
 
 
 def on_startup() -> None:
-    """Execute startup routines: database initialization and environment checks."""
+    """Execute startup routines: database initialization and model loading."""
     logger.info("Initializing IDS Application Lifecycle...")
     try:
         initialize_database()
@@ -71,6 +73,19 @@ def on_startup() -> None:
     except Exception as exc:
         logger.error(f"Failed to initialize database: {exc}")
         raise exc
+
+    # Load baseline threat detection model
+    try:
+        detector = ThreatDetector()
+        if detector.is_loaded:
+            app_state.detector = detector
+            app_state.model_loaded = True
+            app_state.active_model_version = detector.model_version
+            logger.info(f"ThreatDetector loaded model artifact {detector.model_version}")
+        else:
+            logger.warning("ThreatDetector baseline model artifact not found. Detection offline.")
+    except Exception as exc:
+        logger.error(f"Error loading ThreatDetector model: {exc}")
 
 
 def on_shutdown() -> None:

@@ -86,3 +86,15 @@ def test_api_about_info(test_client):
     data = response.json()
     assert "Explainable Adaptive AI-Based Intrusion Detection System" in data["project_title"]
     assert "M.E." in data["academic_degree"]
+
+
+def test_api_model_info(test_client):
+    """Verify /api/model/info returns active model taxonomy and metrics."""
+    client, token = test_client
+    response = client.get("/api/model/info", headers={"X-Session-Token": token})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["model_loaded"] is True
+    assert data["version"] == "v1.0.0-baseline"
+    assert "taxonomy" in data
+    assert data["feature_count"] == 28
