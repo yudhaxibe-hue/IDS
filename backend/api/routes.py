@@ -12,6 +12,7 @@ from pydantic import BaseModel
 from backend.api.auth import verify_local_request, verify_loopback_only, get_session_token
 from app.lifecycle import app_state
 from backend.database.db import get_event_counts, get_db_connection
+from monitoring.flow_processing.pipeline import pipeline
 
 # Base router for loopback endpoints
 router = APIRouter(prefix="/api")
@@ -104,8 +105,14 @@ async def start_monitoring(payload: MonitoringStartRequest):
             detail="Mode must be either 'live' or 'demo'."
         )
 
-    target_interface = payload.interface or "en0"
-    app_state.set_monitoring(True, mode=payload.mode, interface=target_interface)
+    target_interface = payload.interface or ("en0" if payload.mode == "live" else "demo_replay")
+    success = pipeline.start(mode=payload.mode, interface=target_interface)
+
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to start monitoring in {payload.mode} mode. Check capture permissions or adapter state."
+        )
 
     return MonitoringActionResponse(
         success=True,
@@ -118,7 +125,7 @@ async def start_monitoring(payload: MonitoringStartRequest):
 @protected_router.post("/monitoring/stop", response_model=MonitoringActionResponse)
 async def stop_monitoring():
     """Stop active packet monitoring or replay stream."""
-    app_state.set_monitoring(False, mode="idle")
+    pipeline.stop()
     return MonitoringActionResponse(
         success=True,
         message="Monitoring stopped successfully.",

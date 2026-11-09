@@ -140,3 +140,30 @@ This document maintains a chronological, dated record of all engineering changes
 #### Next Action:
 - Commit Milestone 4 to Git.
 - Proceed to **Milestone 5**: Live packet capture (macOS BPF / Windows Npcap), bidirectional flow processing, and offline replay demo mode.
+
+
+---
+
+### [2026-11-09] - Milestone 5: Live Packet Capture, Bidirectional Flow Aggregation & Replay Engine
+
+#### Key Actions Completed:
+1. **Common Capture Interface & OS Adapters**:
+   - Authored `monitoring/capture/base.py` defining `BaseCaptureAdapter`.
+   - Built `monitoring/macos/capture_macos.py` using Scapy `AsyncSniffer(store=False)` and BPF device permission diagnostics.
+   - Built `monitoring/windows/capture_windows.py` detecting Npcap driver installation and providing setup instructions.
+2. **Bidirectional Flow Processing Engine**:
+   - Implemented `monitoring/flow_processing/aggregator.py` grouping packets into 5-tuples.
+   - Managed flow duration, forward/backward packet counts, byte volumes, packet length statistics, inter-arrival times, TCP flags, and window sizes.
+   - Enforced 15-second inactivity timeout and 120-second active timeout.
+   - Ensured zero raw packet payload storage in memory or disk.
+3. **Offline Replay / Demo Stream Engine**:
+   - Authored `monitoring/flow_processing/replay_engine.py` streaming benchmark flow records at 2.5 flows/sec.
+   - Enforced explicit `mode='demo'` tagging on all emitted flows, eliminating unverified claims of live capture during demos.
+4. **Unified Pipeline Coordinator**:
+   - Authored `monitoring/flow_processing/pipeline.py` bridging capture/replay streams to inference, XAI, SQLite persistence, and drift monitoring.
+5. **Testing Suite**:
+   - Added `test_flow_aggregator.py`, `test_replay_engine.py`, and `test_capture_prerequisites.py`: 36 passed, 0 failed, 1 skipped.
+
+#### Next Action:
+- Commit Milestone 5 to Git.
+- Proceed to **Milestone 6**: Desktop dashboard UI polish, alert management, persistence, and report generation.

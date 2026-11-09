@@ -119,6 +119,12 @@ def on_startup() -> None:
 def on_shutdown() -> None:
     """Execute graceful shutdown routines: stop monitoring, release capture resources."""
     logger.info("Executing clean shutdown of IDS Application...")
+    try:
+        from monitoring.flow_processing.pipeline import pipeline
+        pipeline.stop()
+    except Exception as exc:
+        logger.error(f"Error stopping pipeline on shutdown: {exc}")
+
     app_state.is_running = False
     app_state.set_monitoring(False, "idle")
     logger.info("All capture threads and database connections released.")

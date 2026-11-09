@@ -15,10 +15,21 @@
 | **Milestone 2** | Dataset ingestion, canonical feature schema & baseline ML model | **COMPLETED** | 100% |
 | **Milestone 3** | Explainable AI (SHAP integration & deterministic explanations) | **COMPLETED** | 100% |
 | **Milestone 4** | Drift monitoring & controlled adaptation sandbox | **COMPLETED** | 100% |
-| **Milestone 5** | Live packet capture (macOS/Windows) & bidirectional flow processing | PENDING | 0% |
+| **Milestone 5** | Live packet capture (macOS/Windows) & bidirectional flow processing | **COMPLETED** | 100% |
 | **Milestone 6** | Desktop dashboard UI, alert management, persistence & reports | PENDING | 0% |
 | **Milestone 7** | PyInstaller packaging & cross-platform CI (macOS & Windows) | PENDING | 0% |
 | **Milestone 8** | Verification, academic documentation, artifact generation & handover | PENDING | 0% |
+
+---
+
+## 2. Completed Work in Current Milestone (Milestone 5)
+- [x] Defined common abstract capture adapter interface (`monitoring/capture/base.py`).
+- [x] Implemented macOS BPF packet capture adapter (`monitoring/macos/capture_macos.py`) with Scapy AsyncSniffer and `/dev/bpf*` permission detection.
+- [x] Implemented Windows Npcap capture adapter (`monitoring/windows/capture_windows.py`) with automated Npcap driver detection and clear setup instructions.
+- [x] Built bidirectional flow aggregator (`monitoring/flow_processing/aggregator.py`) tracking 5-tuples, forward/backward metrics, packet lengths, TCP flags, and timeouts (15s inactivity, 120s active) without storing packet payloads.
+- [x] Built Offline Replay Simulator (`monitoring/flow_processing/replay_engine.py`) streaming verified benchmark flow records with `mode='demo'` requiring zero elevated permissions.
+- [x] Implemented unified monitoring pipeline coordinator (`monitoring/flow_processing/pipeline.py`) routing packet/replay flows into inference, XAI, SQLite, and drift monitoring.
+- [x] Added unit tests for aggregator, replay engine, and capture prerequisites (`tests/unit/test_flow_aggregator.py`, `tests/unit/test_replay_engine.py`, `tests/unit/test_capture_prerequisites.py`) with 36 passing tests.
 
 ---
 
