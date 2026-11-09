@@ -146,6 +146,7 @@ pytest tests/ -v
 
 ## 6. Project Documentation Links
 
+- [Master's Defense Script & Presentation Guide](documentation/MASTER_DEFENSE_SCRIPT.md)
 - [User Manual & Operator Guide](documentation/USER_MANUAL.md)
 - [System Architecture](ARCHITECTURE.md)
 - [Dataset & Model Card](documentation/DATASET_AND_MODEL_CARD.md)
