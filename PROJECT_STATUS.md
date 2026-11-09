@@ -17,20 +17,31 @@
 | **Milestone 4** | Drift monitoring & controlled adaptation sandbox | **COMPLETED** | 100% |
 | **Milestone 5** | Live packet capture (macOS/Windows) & bidirectional flow processing | **COMPLETED** | 100% |
 | **Milestone 6** | Desktop dashboard UI, alert management, persistence & reports | **COMPLETED** | 100% |
-| **Milestone 7** | PyInstaller packaging & cross-platform CI (macOS & Windows) | PENDING | 0% |
-| **Milestone 8** | Verification, academic documentation, artifact generation & handover | PENDING | 0% |
+| **Milestone 7** | PyInstaller packaging & cross-platform CI (macOS & Windows) | **COMPLETED** | 100% |
+| **Milestone 8** | Verification, academic documentation, artifact generation & handover | **COMPLETED** | 100% |
 
 ---
 
-## 2. Completed Work in Current Milestone (Milestone 6)
-- [x] Connected all UI views to live backend API (Overview, Live Monitor, Alerts, XAI, Drift, History, Reports, Settings, About).
-- [x] Implemented dynamic capture interface picker and permission diagnostics in the frontend.
-- [x] Integrated real-time threat alerts table with severity badges, category filtering, and one-click XAI inspection.
-- [x] Built interactive SHAP feature waterfall/bar attribution visualizations and deterministic summaries in Explainability tab.
-- [x] Wired drift status banners, feature KS metrics, and rollback controls in Drift & Adaptation view.
-- [x] Implemented CSV report streaming endpoint (`/api/reports/csv`) and printable academic summary endpoint (`/api/reports/summary`).
-- [x] Implemented settings persistence (`/api/settings`) for alert threshold sliders and data retention periods in SQLite.
-- [x] Added automated integration tests (`tests/integration/test_reports_and_settings.py`) with 39 passing tests.
+## 2. Completed Work in Current Milestone (Milestones 7 & 8)
+- [x] Authored PyInstaller build specifications for macOS (`packaging/macos/ids_macos.spec`) and Windows (`packaging/windows/ids_windows.spec`).
+- [x] Configured native cross-platform CI workflow (`.github/workflows/ci.yml`) targeting `macos-latest` and `windows-latest`.
+- [x] Successfully built native macOS application bundle (`dist/ExplainableAdaptiveIDS.app`) on macOS host.
+- [x] Generated release archive `ExplainableAdaptiveIDS-macOS-unsigned.zip` (240 MB) and computed SHA-256 checksum (`7cb0467605bb...`).
+- [x] Documented code-signing status honestly (unsigned academic research prototype).
+- [x] Executed full automated test suite: 39 passed, 0 failed, 1 skipped.
+- [x] Completed comprehensive academic and technical documentation suite:
+  - `README.md`
+  - `ARCHITECTURE.md`
+  - `TEST_PLAN.md`
+  - `documentation/PROJECT_ABSTRACT.md`
+  - `documentation/USER_MANUAL.md`
+  - `documentation/DEVELOPER_GUIDE.md`
+  - `documentation/DATASET_AND_MODEL_CARD.md`
+  - `documentation/PRIVACY_AND_SECURITY.md`
+  - `documentation/KNOWN_LIMITATIONS.md`
+  - `PROJECT_STATUS.md`
+  - `DEVELOPMENT_LOG.md`
+  - `LICENSE` (MIT)
 
 ---
 

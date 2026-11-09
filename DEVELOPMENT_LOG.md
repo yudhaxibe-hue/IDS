@@ -193,3 +193,29 @@ This document maintains a chronological, dated record of all engineering changes
 #### Next Action:
 - Commit Milestone 6 to Git.
 - Proceed to **Milestone 7**: PyInstaller packaging & cross-platform CI (macOS & Windows).
+
+
+---
+
+### [2026-11-09] - Milestones 7 & 8: Packaging, CI Automation, Verification & Academic Documentation
+
+#### Key Actions Completed:
+1. **PyInstaller Cross-Platform Packaging**:
+   - Authored `packaging/macos/ids_macos.spec` and `packaging/windows/ids_windows.spec`.
+   - Built native macOS application bundle (`dist/ExplainableAdaptiveIDS.app`) using PyInstaller on macOS ARM64.
+   - Packaged release archive `ExplainableAdaptiveIDS-macOS-unsigned.zip` (240 MB) and computed SHA-256 checksum (`7cb0467605bb...`).
+2. **GitHub Actions Native CI Workflow**:
+   - Authored `.github/workflows/ci.yml` with dual native runner matrix (`macos-latest` and `windows-latest`).
+   - Automated testing, model verification, packaging, archive compression, and checksum generation on pull requests and pushes.
+3. **Comprehensive Documentation Suite**:
+   - `documentation/PROJECT_ABSTRACT.md`: Formal Master of Engineering academic abstract.
+   - `documentation/USER_MANUAL.md`: Non-technical installation, first launch, permission guides, and dashboard operations.
+   - `documentation/DEVELOPER_GUIDE.md`: Developer environment, test runner, model training, and packaging commands.
+   - `documentation/DATASET_AND_MODEL_CARD.md`: Dataset source citations, Canonical Schema V1 table, class distributions, and evaluation metrics.
+   - `documentation/PRIVACY_AND_SECURITY.md`: Loopback security, per-session authentication token, zero telemetry, and payload isolation.
+   - `documentation/KNOWN_LIMITATIONS.md`: Transparent statement of host observability, detection-only scope, and unsigned prototype status.
+4. **Final Verification**:
+   - Full automated test suite passed: 39 tests passed, 0 failed, 1 skipped.
+
+#### Git Status:
+- Ready for final commit and push to remote origin `https://github.com/yudhaxibe-hue/IDS.git`.
