@@ -126,3 +126,23 @@ def test_api_explain_endpoint(test_client):
     assert body["explanation"]["is_available"] is True
     assert len(body["explanation"]["top_features"]) == 5
     assert "DoS / DDoS" in body["explanation"]["summary"]
+
+
+def test_api_drift_endpoint(test_client):
+    """Verify /api/drift returns statistical drift evaluation."""
+    client, token = test_client
+    response = client.get("/api/drift", headers={"X-Session-Token": token})
+    assert response.status_code == 200
+    data = response.json()
+    assert "status" in data
+    assert data["status"] in ("STABLE", "WARNING", "DRIFT_DETECTED")
+    assert "active_model_version" in data
+
+
+def test_api_adaptation_versions(test_client):
+    """Verify /api/adaptation/versions returns registry list."""
+    client, token = test_client
+    response = client.get("/api/adaptation/versions", headers={"X-Session-Token": token})
+    assert response.status_code == 200
+    data = response.json()
+    assert "versions" in data

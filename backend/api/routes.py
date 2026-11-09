@@ -173,16 +173,64 @@ async def get_event_detail(event_id: int):
 
 @protected_router.get("/drift")
 async def get_drift_status():
-    """Fetch concept drift monitoring status and historical shift logs."""
+    """Fetch real-time concept drift monitoring evaluation and shift logs."""
+    detector = app_state.drift_detector
+    drift_data = detector.evaluate_drift().to_dict() if detector else {
+        "status": app_state.drift_status,
+        "sample_size": 0,
+        "drifted_features_count": 0,
+        "drifted_features": [],
+        "summary": "Drift detector uninitialized."
+    }
+
+    # Synchronize global state status
+    app_state.drift_status = drift_data["status"]
+
     with get_db_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM drift_logs ORDER BY id DESC LIMIT 20")
         logs = [dict(row) for row in cursor.fetchall()]
 
     return {
-        "status": app_state.drift_status,
+        **drift_data,
         "active_model_version": app_state.active_model_version,
         "recent_logs": logs
+    }
+
+
+@protected_router.get("/adaptation/versions")
+async def list_model_versions():
+    """List all registered and historical model versions in SQLite."""
+    registry = app_state.model_registry
+    if not registry:
+        return {"versions": []}
+    return {"versions": registry.list_versions()}
+
+
+@protected_router.post("/adaptation/rollback")
+async def rollback_model_version():
+    """Roll back active model to the previous approved version."""
+    registry = app_state.model_registry
+    if not registry:
+        raise HTTPException(status_code=503, detail="Model registry uninitialized.")
+
+    prev_version = registry.rollback()
+    if not prev_version:
+        raise HTTPException(status_code=400, detail="No previous model version available for rollback.")
+
+    # Reload active detector
+    if app_state.detector:
+        versioned_path = Path(__file__).resolve().parent.parent.parent / "models" / "trained" / f"{prev_version}.joblib"
+        if not versioned_path.exists():
+            versioned_path = Path(__file__).resolve().parent.parent.parent / "models" / "trained" / "baseline_model.joblib"
+        app_state.detector.model_path = versioned_path
+        app_state.detector.load_model()
+        app_state.active_model_version = prev_version
+
+    return {
+        "success": True,
+        "message": f"Successfully rolled back active model to {prev_version}.",
+        "active_version": prev_version
     }
 
 

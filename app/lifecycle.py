@@ -10,6 +10,10 @@ from typing import Dict, Any, Optional
 from backend.database.db import initialize_database
 from core.detection.detector import ThreatDetector, DEFAULT_MODEL_PATH
 from core.explainability.explainer import IDSExplainer
+from core.adaptation.drift_detector import DistributionDriftDetector
+from core.adaptation.model_registry import ModelAdaptationRegistry
+from datasets.manager.dataset_manager import ensure_benchmark_sample
+import pandas as pd
 
 logging.basicConfig(
     level=logging.INFO,
@@ -33,6 +37,8 @@ class ApplicationState:
         self.drift_status = "STABLE"
         self.detector: Optional[ThreatDetector] = None
         self.explainer: Optional[IDSExplainer] = None
+        self.drift_detector: Optional[DistributionDriftDetector] = None
+        self.model_registry: Optional[ModelAdaptationRegistry] = None
 
     def set_monitoring(self, active: bool, mode: str = "idle", interface: Optional[str] = None) -> None:
         with self._lock:
@@ -92,6 +98,18 @@ def on_startup() -> None:
                 logger.info("IDSExplainer initialized with SHAP TreeExplainer.")
             else:
                 logger.warning("IDSExplainer failed to initialize.")
+
+            # Initialize Model Adaptation Registry
+            app_state.model_registry = ModelAdaptationRegistry()
+
+            # Initialize Drift Detector with baseline data
+            try:
+                sample_file = ensure_benchmark_sample()
+                baseline_df = pd.read_csv(sample_file)
+                app_state.drift_detector = DistributionDriftDetector(baseline_df=baseline_df)
+                logger.info("DistributionDriftDetector initialized with baseline flow distributions.")
+            except Exception as exc:
+                logger.error(f"Failed to initialize DriftDetector baseline: {exc}")
         else:
             logger.warning("ThreatDetector baseline model artifact not found. Detection offline.")
     except Exception as exc:

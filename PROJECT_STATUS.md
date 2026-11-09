@@ -14,11 +14,22 @@
 | **Milestone 1** | Minimal desktop shell (pywebview + FastAPI + token auth) | **COMPLETED** | 100% |
 | **Milestone 2** | Dataset ingestion, canonical feature schema & baseline ML model | **COMPLETED** | 100% |
 | **Milestone 3** | Explainable AI (SHAP integration & deterministic explanations) | **COMPLETED** | 100% |
-| **Milestone 4** | Drift monitoring & controlled adaptation sandbox | PENDING | 0% |
+| **Milestone 4** | Drift monitoring & controlled adaptation sandbox | **COMPLETED** | 100% |
 | **Milestone 5** | Live packet capture (macOS/Windows) & bidirectional flow processing | PENDING | 0% |
 | **Milestone 6** | Desktop dashboard UI, alert management, persistence & reports | PENDING | 0% |
 | **Milestone 7** | PyInstaller packaging & cross-platform CI (macOS & Windows) | PENDING | 0% |
 | **Milestone 8** | Verification, academic documentation, artifact generation & handover | PENDING | 0% |
+
+---
+
+## 2. Completed Work in Current Milestone (Milestone 4)
+- [x] Implemented sliding-window statistical drift monitor (`core/adaptation/drift_detector.py`) with Kolmogorov-Smirnov (KS) testing.
+- [x] Configured configurable sample thresholds ($N \ge 50$, $p < 0.01$, KS $> 0.20$) to prevent noisy false drift alerts.
+- [x] Built audited Model Adaptation Registry (`core/adaptation/model_registry.py`) in SQLite.
+- [x] Built candidate model evaluation sandbox verifying F1 $\ge 0.90$ and FPR $\le 0.05$ before promotion.
+- [x] Implemented atomic, reversible model rollback functionality (`POST /api/adaptation/rollback`).
+- [x] Guarded against unverified self-training: unlabeled live traffic is never treated as ground-truth training labels.
+- [x] Added unit and integration tests (`tests/unit/test_adaptation.py`, `/api/drift`, `/api/adaptation/versions`) with 30 passing tests.
 
 ---
 

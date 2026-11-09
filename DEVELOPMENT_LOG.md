@@ -118,3 +118,25 @@ This document maintains a chronological, dated record of all engineering changes
 #### Next Action:
 - Commit Milestone 3 to Git.
 - Proceed to **Milestone 4**: Drift monitoring & controlled adaptation sandbox.
+
+
+---
+
+### [2026-11-09] - Milestone 4: Drift Monitoring & Controlled Adaptation Sandbox
+
+#### Key Actions Completed:
+1. **Statistical Drift Detection**:
+   - Implemented `core/adaptation/drift_detector.py` executing two-sample Kolmogorov-Smirnov (KS) tests on sliding flow feature windows.
+   - Guarded against false alarms using minimum window sizes ($N \ge 50$) and multi-feature thresholding.
+2. **Model Registry & Candidate Evaluation Sandbox**:
+   - Implemented `core/adaptation/model_registry.py` managing versioned model artifacts and SQLite tracking.
+   - Enforced strict candidate evaluation gates: candidates must meet $F_1 \ge 0.90$ and $FPR \le 0.05$ against held-out validation protocol prior to promotion.
+3. **Reversible Rollback**:
+   - Implemented atomic rollback switching the active model pointer to the previous approved version.
+4. **API Integration & Testing**:
+   - Added `/api/drift`, `/api/adaptation/versions`, and `/api/adaptation/rollback` routes.
+   - Added unit and integration tests: 30 passed, 0 failed, 1 skipped.
+
+#### Next Action:
+- Commit Milestone 4 to Git.
+- Proceed to **Milestone 5**: Live packet capture (macOS BPF / Windows Npcap), bidirectional flow processing, and offline replay demo mode.
