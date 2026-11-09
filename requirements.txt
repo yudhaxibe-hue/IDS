@@ -1,0 +1,34 @@
+# ==============================================================================
+# Explainable Adaptive AI-Based Intrusion Detection System
+# Core Python Dependencies (compatible with Python 3.9 - 3.12, macOS arm64 & Windows x64)
+# ==============================================================================
+
+# Desktop Shell & GUI
+pywebview>=4.4.1,<5.0.0
+
+# Backend API & Server
+fastapi>=0.104.0,<1.0.0
+uvicorn[standard]>=0.24.0,<1.0.0
+pydantic>=2.5.0,<3.0.0
+httpx>=0.25.0,<1.0.0
+
+# Machine Learning & Tabular Processing
+numpy>=1.24.0,<2.0.0
+pandas>=2.1.0,<3.0.0
+scikit-learn>=1.3.0,<1.5.0
+scipy>=1.11.0,<2.0.0
+joblib>=1.3.0,<2.0.0
+
+# Explainable AI (XAI)
+# TreeExplainer is used for Random Forest / Extra Trees classifiers
+shap>=0.43.0,<1.0.0
+
+# Packet Capture & Network Protocols
+# macOS requires BPF capture permissions; Windows requires Npcap driver
+scapy>=2.5.0,<3.0.0
+
+# Testing & Quality Assurance
+pytest>=7.4.0,<9.0.0
+
+# Packaging & Distribution (Build environment only)
+pyinstaller>=6.2.0,<7.0.0
