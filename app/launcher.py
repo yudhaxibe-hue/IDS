@@ -142,10 +142,17 @@ def launch(headless: bool = False, open_browser: bool = False) -> None:
         webview.start(debug=False)
 
     except Exception as exc:
-        logger.error(f"Error launching pywebview window: {exc}")
-        on_shutdown()
-        server_thread.stop()
-        raise exc
+        logger.warning(f"Native desktop window unavailable ({exc}). Opening in default web browser instead...")
+        import webbrowser
+        webbrowser.open(frontend_url)
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            logger.info("Termination signal received.")
+        finally:
+            on_shutdown()
+            server_thread.stop()
 
 
 if __name__ == "__main__":

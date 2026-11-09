@@ -35,9 +35,12 @@ def test_windows_adapter_prerequisites():
 
 
 def test_interfaces_listing():
-    """Verify available interface discovery."""
-    mac_adapter = MacOSCaptureAdapter()
-    ifaces = mac_adapter.get_interfaces()
+    """Verify available interface discovery across platforms."""
+    if platform.system() == "Darwin":
+        adapter = MacOSCaptureAdapter()
+    else:
+        adapter = WindowsCaptureAdapter()
+    ifaces = adapter.get_interfaces()
     assert isinstance(ifaces, list)
     assert len(ifaces) > 0
     assert "name" in ifaces[0]

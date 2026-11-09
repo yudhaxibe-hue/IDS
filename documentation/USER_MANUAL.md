@@ -11,17 +11,34 @@ The **Explainable Adaptive Intrusion Detection System (IDS)** is a desktop cyber
 
 ### 2. Installation & First Launch
 
-#### macOS Installation:
-1. Download the latest release (`ExplainableAdaptiveIDS-macOS-unsigned.zip`) from GitHub Releases.
-2. Unzip the file to extract `ExplainableAdaptiveIDS.app`.
-3. Drag `ExplainableAdaptiveIDS.app` to your `/Applications` folder.
-4. **First Launch Security Note**: Because this is an academic research prototype distributed without a commercial Apple Developer certificate, macOS Gatekeeper may show a notice on first launch:
-   * *Resolution*: Right-click (or Control-click) `ExplainableAdaptiveIDS.app` and select **Open**, then click **Open** in the dialog. You only need to do this once.
+#### Method 1: 1-Click Launchers (Recommended for Evaluators & Students)
+No manual terminal commands or virtual environment configuration required:
+* **macOS**:
+  1. Download or clone this repository to your Mac.
+  2. Double-click `Run_IDS_Mac.command` in Finder.
+  3. The launcher will automatically configure your environment and launch the desktop window. (You can also choose to open directly in Safari).
+* **Windows**:
+  1. Download or clone this repository to your PC.
+  2. Double-click `Run_IDS_Windows.bat` in File Explorer.
+  3. The batch script will automatically check Python, prepare dependencies, and open the desktop application.
 
-#### Windows Installation:
-1. Download `ExplainableAdaptiveIDS-Windows-unsigned.zip` from GitHub Releases.
-2. Extract the folder to your preferred location (e.g., `C:\Program Files\ExplainableAdaptiveIDS`).
-3. Double-click `ExplainableAdaptiveIDS.exe` to launch the application.
+#### Method 2: Standalone Pre-Packaged Applications (No Python Required)
+* **macOS Installation**:
+  1. Download the latest release (`ExplainableAdaptiveIDS-macOS-unsigned.zip`) from GitHub Releases.
+  2. Unzip the file to extract `ExplainableAdaptiveIDS.app`.
+  3. Drag `ExplainableAdaptiveIDS.app` to your `/Applications` folder.
+  4. **First Launch Security Note**: Because this is an academic research prototype distributed without a commercial Apple Developer certificate, macOS Gatekeeper may show a notice on first launch:
+     * *Resolution*: Right-click (or Control-click) `ExplainableAdaptiveIDS.app` and select **Open**, then click **Open** in the dialog. You only need to do this once.
+
+* **Windows Installation**:
+  1. Download `ExplainableAdaptiveIDS-Windows-unsigned.zip` from GitHub Releases.
+  2. Extract the folder to your preferred location (e.g., `C:\Program Files\ExplainableAdaptiveIDS`).
+  3. Double-click `ExplainableAdaptiveIDS.exe` to launch the application.
+
+#### Method 3: Direct Web Browser Mode
+If you prefer viewing the interface in a standard browser (Safari, Google Chrome, or Microsoft Edge):
+* On macOS: Run `./venv/bin/python3 -m app.launcher --browser`
+* On Windows: Run `venv\Scripts\python.exe -m app.launcher --browser`
 
 ---
 

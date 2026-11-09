@@ -14,6 +14,11 @@ def test_client():
     set_session_token(token)
     with TestClient(app, base_url="http://127.0.0.1") as client:
         yield client, token
+    # Teardown test artifacts
+    from backend.database.db import get_db_connection
+    with get_db_connection() as conn:
+        conn.execute("DELETE FROM events WHERE src_ip = '10.0.0.50'")
+        conn.commit()
 
 
 def test_reports_csv_export(test_client):
