@@ -98,3 +98,31 @@ def test_api_model_info(test_client):
     assert data["version"] == "v1.0.0-baseline"
     assert "taxonomy" in data
     assert data["feature_count"] == 28
+
+
+def test_api_explain_endpoint(test_client):
+    """Verify /api/explain scores flow and returns SHAP attributions and summary."""
+    client, token = test_client
+    flow = {
+        "flow_duration": 0.5,
+        "tot_fwd_pkts": 800,
+        "tot_bwd_pkts": 2,
+        "tot_fwd_bytes": 48000,
+        "tot_bwd_bytes": 80,
+        "fwd_pkt_len_mean": 60.0,
+        "bwd_pkt_len_mean": 40.0,
+        "flow_bytes_per_sec": 96160.0,
+        "flow_pkts_per_sec": 1604.0,
+        "syn_flag_cnt": 500,
+        "init_win_bytes_fwd": 1024,
+        "init_win_bytes_bwd": 0
+    }
+    response = client.post("/api/explain", json=flow, headers={"X-Session-Token": token})
+    assert response.status_code == 200
+    body = response.json()
+    assert "detection" in body
+    assert "explanation" in body
+    assert body["detection"]["is_malicious"] is True
+    assert body["explanation"]["is_available"] is True
+    assert len(body["explanation"]["top_features"]) == 5
+    assert "DoS / DDoS" in body["explanation"]["summary"]

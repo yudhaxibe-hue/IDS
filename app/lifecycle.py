@@ -9,6 +9,7 @@ from typing import Dict, Any, Optional
 
 from backend.database.db import initialize_database
 from core.detection.detector import ThreatDetector, DEFAULT_MODEL_PATH
+from core.explainability.explainer import IDSExplainer
 
 logging.basicConfig(
     level=logging.INFO,
@@ -31,6 +32,7 @@ class ApplicationState:
         self.alert_count = 0
         self.drift_status = "STABLE"
         self.detector: Optional[ThreatDetector] = None
+        self.explainer: Optional[IDSExplainer] = None
 
     def set_monitoring(self, active: bool, mode: str = "idle", interface: Optional[str] = None) -> None:
         with self._lock:
@@ -74,7 +76,7 @@ def on_startup() -> None:
         logger.error(f"Failed to initialize database: {exc}")
         raise exc
 
-    # Load baseline threat detection model
+    # Load baseline threat detection model & XAI explainer
     try:
         detector = ThreatDetector()
         if detector.is_loaded:
@@ -82,6 +84,14 @@ def on_startup() -> None:
             app_state.model_loaded = True
             app_state.active_model_version = detector.model_version
             logger.info(f"ThreatDetector loaded model artifact {detector.model_version}")
+
+            # Initialize SHAP TreeExplainer
+            explainer = IDSExplainer(detector.classifier)
+            if explainer.is_initialized:
+                app_state.explainer = explainer
+                logger.info("IDSExplainer initialized with SHAP TreeExplainer.")
+            else:
+                logger.warning("IDSExplainer failed to initialize.")
         else:
             logger.warning("ThreatDetector baseline model artifact not found. Detection offline.")
     except Exception as exc:

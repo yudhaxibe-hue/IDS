@@ -13,12 +13,23 @@
 | **Milestone 0** | Workspace inspection, risk assessment, architecture & planning | **COMPLETED** | 100% |
 | **Milestone 1** | Minimal desktop shell (pywebview + FastAPI + token auth) | **COMPLETED** | 100% |
 | **Milestone 2** | Dataset ingestion, canonical feature schema & baseline ML model | **COMPLETED** | 100% |
-| **Milestone 3** | Explainable AI (SHAP integration & deterministic explanations) | PENDING | 0% |
+| **Milestone 3** | Explainable AI (SHAP integration & deterministic explanations) | **COMPLETED** | 100% |
 | **Milestone 4** | Drift monitoring & controlled adaptation sandbox | PENDING | 0% |
 | **Milestone 5** | Live packet capture (macOS/Windows) & bidirectional flow processing | PENDING | 0% |
 | **Milestone 6** | Desktop dashboard UI, alert management, persistence & reports | PENDING | 0% |
 | **Milestone 7** | PyInstaller packaging & cross-platform CI (macOS & Windows) | PENDING | 0% |
 | **Milestone 8** | Verification, academic documentation, artifact generation & handover | PENDING | 0% |
+
+---
+
+## 2. Completed Work in Current Milestone (Milestone 3)
+- [x] Initialized `shap.TreeExplainer` on the trained Random Forest model (`core/explainability/explainer.py`).
+- [x] Implemented fast sub-15ms SHAP attribution extraction across multi-class tree outputs.
+- [x] Mapped canonical technical features to plain-language, non-technical descriptions with physical units.
+- [x] Created deterministic narrative generator explaining which factors pushed predictions toward attack vs. normal.
+- [x] Implemented transparent fallback handling ("Explanation Unavailable") preventing fabricated reasons.
+- [x] Integrated XAI engine into FastAPI routes (`/api/explain`, `/api/explain/{event_id}`).
+- [x] Added automated unit and integration tests (`tests/unit/test_explainability.py`, `tests/integration/test_api_milestone1.py::test_api_explain_endpoint`) with 25 passing tests.
 
 ---
 

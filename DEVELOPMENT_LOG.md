@@ -95,3 +95,26 @@ This document maintains a chronological, dated record of all engineering changes
 #### Next Action:
 - Commit Milestone 2 to Git.
 - Proceed to **Milestone 3**: Explainable AI (SHAP TreeExplainer, feature attribution rankings, and plain-language templates).
+
+
+---
+
+### [2026-11-09] - Milestone 3: Explainable AI (SHAP TreeExplainer & Deterministic Summaries)
+
+#### Key Actions Completed:
+1. **SHAP TreeExplainer Implementation**:
+   - Authored `core/explainability/explainer.py` with `IDSExplainer` computing tree SHAP attributions in sub-15ms.
+   - Handled multi-class output vectors to extract directed feature contributions.
+2. **Plain-Language Non-Technical Mapping**:
+   - Mapped all 28 canonical features to clear human labels and units (`Flow Duration` in seconds, `Packet Rate` in pkts/s, `SYN Flag Count`, etc.).
+   - Established deterministic attribution ranking (top-k features) and direction flags (positive towards attack, negative towards normal).
+3. **Deterministic Plain-Language Summaries**:
+   - Created templated narrative generator describing reasons behind alerts without false causal claims.
+   - Implemented transparent fallback handling with zero invented explanations.
+4. **API Integration & Testing**:
+   - Added `/api/explain` and `/api/explain/{event_id}` routes.
+   - Added unit and integration tests: 25 passed, 0 failed, 1 skipped.
+
+#### Next Action:
+- Commit Milestone 3 to Git.
+- Proceed to **Milestone 4**: Drift monitoring & controlled adaptation sandbox.

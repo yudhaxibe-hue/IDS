@@ -223,5 +223,68 @@ async def get_model_info():
     }
 
 
+@protected_router.post("/explain")
+async def explain_flow(payload: Dict[str, Any]):
+    """
+    Score a flow vector and compute SHAP explanation with deterministic plain-language summary.
+    """
+    detector = app_state.detector
+    explainer = app_state.explainer
+
+    if not detector or not detector.is_loaded:
+        raise HTTPException(status_code=503, detail="ThreatDetector is not loaded.")
+    if not explainer or not explainer.is_initialized:
+        raise HTTPException(status_code=503, detail="XAI explainer is not initialized.")
+
+    detection = detector.predict_flow(payload)
+    explanation = explainer.explain_prediction(detection, top_k=5)
+
+    return {
+        "detection": detection.to_dict(),
+        "explanation": explanation.to_dict()
+    }
+
+
+@protected_router.get("/explain/{event_id}")
+async def explain_saved_event(event_id: int):
+    """
+    Fetch or re-compute the SHAP explanation for a persisted event from SQLite.
+    """
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM events WHERE id = ?", (event_id,))
+        row = cursor.fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Event not found.")
+        
+        event_dict = dict(row)
+
+    # Check if explanation was already persisted
+    if event_dict.get("explanation_json"):
+        import json
+        try:
+            persisted = json.loads(event_dict["explanation_json"])
+            if persisted and persisted.get("is_available"):
+                return persisted
+        except Exception:
+            pass
+
+    # Re-compute if raw features are present
+    detector = app_state.detector
+    explainer = app_state.explainer
+    if detector and detector.is_loaded and explainer and explainer.is_initialized and event_dict.get("features_json"):
+        import json
+        raw_feats = json.loads(event_dict["features_json"])
+        detection = detector.predict_flow(raw_feats)
+        explanation = explainer.explain_prediction(detection, top_k=5)
+        return explanation.to_dict()
+
+    return {
+        "is_available": False,
+        "summary": f"Historical alert #{event_id} flagged as {event_dict.get('attack_category')} with score {event_dict.get('confidence_score')}.",
+        "top_features": []
+    }
+
+
 # Include protected router inside the base /api router
 router.include_router(protected_router)
