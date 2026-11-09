@@ -16,9 +16,21 @@
 | **Milestone 3** | Explainable AI (SHAP integration & deterministic explanations) | **COMPLETED** | 100% |
 | **Milestone 4** | Drift monitoring & controlled adaptation sandbox | **COMPLETED** | 100% |
 | **Milestone 5** | Live packet capture (macOS/Windows) & bidirectional flow processing | **COMPLETED** | 100% |
-| **Milestone 6** | Desktop dashboard UI, alert management, persistence & reports | PENDING | 0% |
+| **Milestone 6** | Desktop dashboard UI, alert management, persistence & reports | **COMPLETED** | 100% |
 | **Milestone 7** | PyInstaller packaging & cross-platform CI (macOS & Windows) | PENDING | 0% |
 | **Milestone 8** | Verification, academic documentation, artifact generation & handover | PENDING | 0% |
+
+---
+
+## 2. Completed Work in Current Milestone (Milestone 6)
+- [x] Connected all UI views to live backend API (Overview, Live Monitor, Alerts, XAI, Drift, History, Reports, Settings, About).
+- [x] Implemented dynamic capture interface picker and permission diagnostics in the frontend.
+- [x] Integrated real-time threat alerts table with severity badges, category filtering, and one-click XAI inspection.
+- [x] Built interactive SHAP feature waterfall/bar attribution visualizations and deterministic summaries in Explainability tab.
+- [x] Wired drift status banners, feature KS metrics, and rollback controls in Drift & Adaptation view.
+- [x] Implemented CSV report streaming endpoint (`/api/reports/csv`) and printable academic summary endpoint (`/api/reports/summary`).
+- [x] Implemented settings persistence (`/api/settings`) for alert threshold sliders and data retention periods in SQLite.
+- [x] Added automated integration tests (`tests/integration/test_reports_and_settings.py`) with 39 passing tests.
 
 ---
 

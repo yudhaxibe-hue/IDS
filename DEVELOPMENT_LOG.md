@@ -167,3 +167,29 @@ This document maintains a chronological, dated record of all engineering changes
 #### Next Action:
 - Commit Milestone 5 to Git.
 - Proceed to **Milestone 6**: Desktop dashboard UI polish, alert management, persistence, and report generation.
+
+
+---
+
+### [2026-11-09] - Milestone 6: Dashboard UI, Alert Management, Persistence & Reports
+
+#### Key Actions Completed:
+1. **Frontend-Backend Integration**:
+   - Wired all 9 tabs in `frontend/js/app.js` to authenticated backend REST endpoints.
+   - Live telemetry polling updates processed flows, malicious count, monitoring mode pill, model version, and drift state.
+2. **Alert Management & Explainability UI**:
+   - Threat Alerts table features category filtering, severity color badges, and one-click "Inspect XAI" buttons.
+   - Explainability tab renders interactive feature attribution tracks and deterministic plain-language summaries.
+3. **Drift & Adaptation Controls**:
+   - Real-time drift status banner displays "STABLE", "WARNING", or "DRIFT DETECTED" based on KS tests.
+   - One-click model rollback button cleanly reverts the active model version to the previous approved artifact.
+4. **Reports & Settings Persistence**:
+   - Added `/api/reports/csv` for streaming event export.
+   - Added `/api/reports/summary` for academic summary generation.
+   - Added `/api/settings` for storing configurable alert thresholds and retention periods in SQLite.
+5. **Testing Suite**:
+   - Added `test_reports_and_settings.py`: 39 passed, 0 failed, 1 skipped.
+
+#### Next Action:
+- Commit Milestone 6 to Git.
+- Proceed to **Milestone 7**: PyInstaller packaging & cross-platform CI (macOS & Windows).

@@ -249,8 +249,8 @@
                 <h4>Controlled Adaptation Governance</h4>
                 <p>When significant concept drift is flagged, candidate models must be evaluated against a held-out test protocol before promotion.</p>
                 <div class="button-group">
-                  <button class="btn btn-secondary" disabled>Assess Candidate Model</button>
-                  <button class="btn btn-secondary" disabled>Rollback to Previous Model</button>
+                  <button class="btn btn-secondary" onclick="loadDriftData()">Refresh Drift Statistics</button>
+                  <button class="btn btn-danger btn-sm" id="btn-rollback-model" onclick="executeRollback()">Rollback to Previous Model</button>
                 </div>
               </div>
             </div>
@@ -292,7 +292,7 @@
             <div class="card-body">
               <p>Export authenticated alert logs and model telemetry for audit and academic evaluation.</p>
               <div class="button-group">
-                <button class="btn btn-primary" onclick="alert('Exporting verified events to CSV...')">Export Events to CSV</button>
+                <button class="btn btn-primary" onclick="exportCSV()">Export Events to CSV</button>
                 <button class="btn btn-secondary" onclick="window.print()">Print Report Summary</button>
               </div>
             </div>

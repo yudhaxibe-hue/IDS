@@ -5,8 +5,9 @@ explainability inspection, and drift diagnostics.
 """
 import os
 import platform
+from datetime import datetime
 from typing import Optional, List, Dict, Any
-from fastapi import APIRouter, Depends, Query, HTTPException, status
+from fastapi import APIRouter, Depends, Query, HTTPException, status, Response
 from pydantic import BaseModel
 
 from backend.api.auth import verify_local_request, verify_loopback_only, get_session_token
@@ -339,6 +340,153 @@ async def explain_saved_event(event_id: int):
         "summary": f"Historical alert #{event_id} flagged as {event_dict.get('attack_category')} with score {event_dict.get('confidence_score')}.",
         "top_features": []
     }
+
+
+@protected_router.get("/reports/csv")
+async def export_events_csv():
+    """Export all recorded flow events and alerts to CSV."""
+    import csv
+    import io
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    # Header
+    writer.writerow([
+        "Event ID", "Timestamp", "Mode", "Source IP", "Destination IP",
+        "Source Port", "Destination Port", "Protocol", "Packets", "Bytes",
+        "Duration (s)", "Is Malicious", "Attack Category", "Confidence Score",
+        "Severity", "Explanation Summary"
+    ])
+
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM events ORDER BY id ASC")
+        rows = cursor.fetchall()
+        for r in rows:
+            explanation_summary = ""
+            if r["explanation_json"]:
+                import json
+                try:
+                    exp = json.loads(r["explanation_json"])
+                    explanation_summary = exp.get("summary", "")
+                except Exception:
+                    pass
+
+            writer.writerow([
+                r["id"],
+                r["timestamp"],
+                r["mode"],
+                r["src_ip"],
+                r["dst_ip"],
+                r["src_port"],
+                r["dst_port"],
+                r["protocol"],
+                r["packet_count"],
+                r["byte_count"],
+                r["flow_duration"],
+                "YES" if r["is_malicious"] else "NO",
+                r["attack_category"],
+                r["confidence_score"],
+                r["severity"],
+                explanation_summary
+            ])
+
+    csv_data = output.getvalue()
+    return Response(
+        content=csv_data,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=ids_events_report.csv"}
+    )
+
+
+@protected_router.get("/reports/summary")
+async def get_report_summary():
+    """Return high-level summary metrics for academic and compliance reports."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) as total FROM events")
+        total = cursor.fetchone()["total"]
+
+        cursor.execute("SELECT COUNT(*) as malicious FROM events WHERE is_malicious = 1")
+        malicious = cursor.fetchone()["malicious"]
+
+        cursor.execute("""
+            SELECT attack_category, COUNT(*) as count
+            FROM events WHERE is_malicious = 1
+            GROUP BY attack_category
+        """)
+        category_breakdown = {r["attack_category"]: r["count"] for r in cursor.fetchall()}
+
+        cursor.execute("""
+            SELECT src_ip, COUNT(*) as count
+            FROM events WHERE is_malicious = 1
+            GROUP BY src_ip ORDER BY count DESC LIMIT 5
+        """)
+        top_attackers = [{"ip": r["src_ip"], "count": r["count"]} for r in cursor.fetchall()]
+
+    return {
+        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "total_flows_processed": total,
+        "normal_flows": total - malicious,
+        "threat_alerts": malicious,
+        "malicious_ratio": round((malicious / max(1, total)), 4),
+        "attack_breakdown": category_breakdown,
+        "top_attackers": top_attackers,
+        "active_model_version": app_state.active_model_version,
+        "drift_status": app_state.drift_status
+    }
+
+
+class SettingsPayload(BaseModel):
+    alert_threshold: Optional[float] = None
+    retention_days: Optional[int] = None
+
+
+@protected_router.get("/settings")
+async def get_settings():
+    """Retrieve application and detection settings from SQLite."""
+    settings_dict = {
+        "alert_threshold": 0.70,
+        "retention_days": 30,
+        "privacy_mode": "strict_local_only"
+    }
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT key, value FROM settings")
+        for r in cursor.fetchall():
+            try:
+                settings_dict[r["key"]] = float(r["value"]) if "." in r["value"] else int(r["value"])
+            except ValueError:
+                settings_dict[r["key"]] = r["value"]
+
+    return settings_dict
+
+
+@protected_router.post("/settings")
+async def update_settings(payload: SettingsPayload):
+    """Save application and detection settings to SQLite."""
+    now_iso = datetime.utcnow().isoformat() + "Z"
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        if payload.alert_threshold is not None:
+            clamped_threshold = max(0.10, min(0.99, payload.alert_threshold))
+            cursor.execute("""
+                INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at
+            """, ("alert_threshold", str(clamped_threshold), now_iso))
+            if app_state.detector:
+                app_state.detector.alert_threshold = clamped_threshold
+
+        if payload.retention_days is not None:
+            cursor.execute("""
+                INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at
+            """, ("retention_days", str(payload.retention_days), now_iso))
+
+        conn.commit()
+
+    return {"success": True, "message": "Settings updated successfully."}
 
 
 # Include protected router inside the base /api router
